@@ -807,7 +807,7 @@ impl<'de> de::Deserializer<'de> for ValueDeserializer<'de> {
     {
         let start = self.value.start;
         let res = match self.value.e {
-            E::Integer(i) => visitor.visit_i64(i),
+            E::Integer(i) => visitor.visit_u64(i),
             E::Boolean(b) => visitor.visit_bool(b),
             E::Float(f) => visitor.visit_f64(f),
             E::String(Cow::Borrowed(s)) => visitor.visit_borrowed_str(s),
