@@ -807,7 +807,7 @@ impl<'de> de::Deserializer<'de> for ValueDeserializer<'de> {
     {
         let start = self.value.start;
         let res = match self.value.e {
-            E::Integer(i) => visitor.visit_i64(i),
+            E::Integer(i) => visitor.visit_u64(i),
             E::Boolean(b) => visitor.visit_bool(b),
             E::Float(f) => visitor.visit_f64(f),
             E::String(Cow::Borrowed(s)) => visitor.visit_borrowed_str(s),
@@ -1611,7 +1611,7 @@ impl<'a> Deserializer<'a> {
         }
     }
 
-    fn integer(&self, s: &'a str, radix: u32) -> Result<i64, Error> {
+    fn integer(&self, s: &'a str, radix: u32) -> Result<u64, Error> {
         let allow_sign = radix == 10;
         let allow_leading_zeros = radix != 10;
         let (prefix, suffix) = self.parse_integer(s, allow_sign, allow_leading_zeros, radix)?;
@@ -1619,7 +1619,7 @@ impl<'a> Deserializer<'a> {
         if suffix != "" {
             return Err(self.error(start, ErrorKind::NumberInvalid));
         }
-        i64::from_str_radix(&prefix.replace("_", "").trim_start_matches('+'), radix)
+        u64::from_str_radix(&prefix.replace("_", "").trim_start_matches('+'), radix)
             .map_err(|_e| self.error(start, ErrorKind::NumberInvalid))
     }
 
@@ -2231,7 +2231,7 @@ struct Value<'a> {
 
 #[derive(Debug)]
 enum E<'a> {
-    Integer(i64),
+    Integer(u64),
     Float(f64),
     Boolean(bool),
     String(Cow<'a, str>),
