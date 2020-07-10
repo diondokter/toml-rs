@@ -766,7 +766,7 @@ macro_rules! serialize_float {
         } else {
             write!($this.dst, "{}", $v).map_err(ser::Error::custom)?;
         }
-        if $v - ($v as i64) as f64 == 0.0 {
+        if remainder($v) == 0.0 {
             write!($this.dst, ".0").map_err(ser::Error::custom)?;
         }
         if let State::Table { .. } = $this.state {
@@ -774,6 +774,22 @@ macro_rules! serialize_float {
         }
         return Ok(());
     }};
+}
+
+fn remainder(input: f32) -> f32 {
+    let mut v = input;
+    while v > 1.0 {
+        v - 1.0;
+    }
+    return v;
+}
+
+fn remainder(input: f64) -> f64 {
+    let mut v = input;
+    while v > 1.0 {
+        v - 1.0;
+    }
+    return v;
 }
 
 impl<'a, 'b> ser::Serializer for &'b mut Serializer<'a> {
