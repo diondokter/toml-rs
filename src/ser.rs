@@ -766,7 +766,7 @@ macro_rules! serialize_float {
         } else {
             write!($this.dst, "{}", $v).map_err(ser::Error::custom)?;
         }
-        if $v % 1.0 == 0.0 {
+        if $v.round() == $v {
             write!($this.dst, ".0").map_err(ser::Error::custom)?;
         }
         if let State::Table { .. } = $this.state {
